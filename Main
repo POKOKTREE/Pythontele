@@ -1,1 +1,124 @@
+from datetime import datetime
+import pytz
+import telebot
 
+
+
+api = "6049915781:AAEgglpVKzzu2JG8ahKMqh3CuanztpPYxMA"
+bot = telebot.TeleBot(api)
+
+
+print(">>>Bot started and waiting...\n")
+
+
+birthday = {
+  "21-05": ["Miss Nabilah"],
+  "14-04": ["Quezain"],
+  "15-08": ["Aeisha"],
+  "18-05": ["Bella"],
+  "05-02": ["Akeef"],
+  "11-01": ["Aida"],
+  "29-01": ["Elena"],
+  "12-05": ["Umar and Qaseh"],
+  "12-03": ["Aizzat"],
+  "07-03": ["Danish and Raja"],
+  "05-11": ["Hariz and Mikhail"],
+  "27-04": ["Nazran"],
+  "07-04": ["Zakwan"],
+  "28-08": ["Naurah"],
+  "10-01": ["Aina"],
+  "05-12": ["Iffah"],
+  "14-12": ["Widad"],
+  "06-05": ["Balqis, Batrisyia and Qaisara"],
+  "28-01": ["Qistina"],
+  "21-01": ["Izz"],
+  "22-05": ["addin"],
+  "18-12": ["Adam"],
+  "05-04": ["Abangah"],
+  "13-03": ["Along"],
+  "17-08": ["Ayah"],
+  "18-07": ["Mama"]
+
+}
+
+incoming = {
+  "14-05": ["Miss Nabilah"],
+  "03-04": ["Quezain"],
+  "08-08": ["Aeisha"],
+  "11-05": ["Bella"],
+  "29-01": ["Akeef"],
+  "04-01": ["Aida"],
+  "22-01": ["Elena"],
+  "05-05": ["Umar and Qaseh"],
+  "05-03": ["Aizzat"],
+  "31-02": ["Danish and Raja"],
+  "29-10": ["Hariz and Mikhail"],
+  "20-04": ["Nazran"],
+  "31-03": ["Zakwan"],
+  "21-08": ["Naurah"],
+  "03-01": ["Aina"],
+  "28-11": ["Iffah"],
+  "07-12": ["Widad"],
+  "29-04": ["Balqis, Batrisyia and Qaisara"],
+  "21-01": ["Qistina"],
+  "14-01": ["Izz"],
+  "11-12": ["Adam"],
+  "29-03": ["Abangah"],
+  "6-03": ["Along"],
+  "10-08": ["Ayah"],
+  "11-07": ["Mama"]
+
+}
+
+
+
+@bot.message_handler(commands=['list'])
+def send_list(message):
+    list = '"14-04": ["Quezain"],\n"15-08": ["Aeisha"],\n"18-05": ["Bella"],\n"05-02": ["Akeef"],\n"11-01": ["Aida"],\n"29-01": ["Elena"],\n"12-05": ["Umar", " Qaseh"],\n"12-03": ["Aizzat"],\n"07-03": ["Danish", " Raja"],\n"05-11": ["Hariz", "Mikhail"],\n"27-04": ["Nazran"],\n"07-04": ["Zakwan"],\n"28-08": ["Naurah"],\n"10-01": ["Aina"],\n"05-12": ["Iffah"],\n"14-12": ["Widad"],\n "06-05": ["Balqis", "Batrisyia", "Qaisara"],\n"28-01": ["Qistina"],\n"21-01": ["Izz"]'
+    bot.reply_to(message, list)
+    print(f">> List has been requested by {message.chat.first_name} {message.chat.last_name}, Username '{message.chat.username}' in private\n")
+
+here = pytz.timezone("Asia/Kuala_Lumpur")
+
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+  bot.reply_to(message, "Hello, This is a Birthday reminder bot for me only.\n\nIf the bot didn't remind your birthday please be noted it is because the bot only notified the developer only\n\nHave a great dayy")
+  print(f">>bot has started by {message.chat.first_name} {message.chat.last_name}, Username = '{message.chat.username}, user id = {message.chat.id}'\n")
+
+
+
+
+now = datetime.now(here)
+date = now.strftime("%d-%m")
+
+
+
+
+if date in incoming:
+  messages = "🥁 psst..it's "
+  for i in incoming[now.strftime("%d-%m")]:
+    messages += "<b>" + i + "</b> birthday this week.. 🥁\n\nHow about some present for them?"
+    chat_id = "1160508602"
+    bot.send_message(chat_id, messages, parse_mode="HTML")
+    print("birthday incoming")
+
+
+if date in birthday:
+  messages = "🎂🎉 Happy Birthday to "
+  for i in birthday[now.strftime("%d-%m")]:
+    messages += "<b>" + i + "</b>! 🎉🎂\n\nHope you have a good year! 🎁"
+    chat_id = "1160508602"
+    bot.send_message(chat_id, messages, parse_mode="HTML")
+    print(">>It's " + i + " Birthday todayy..hehe\n")
+
+else:
+    message = "no birthday.."
+    chat_id = "1160508602"
+    bot.send_message(chat_id, message)
+
+@bot.message_handler(func=lambda message: True)
+def echo_all(message):
+    text = "Invalid Message"
+    bot.reply_to(message, text)
+
+bot.infinity_polling()
